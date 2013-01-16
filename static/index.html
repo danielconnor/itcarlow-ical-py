@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>iCalendar import - ITCarlow Timetable</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div class="content">
+    <h1>iCalendar exporter</h1>
+    <p>
+      This service allows you to convert IT Carlow timetables to the iCalendar format.
+      <br>
+      This means you can add your timetables to your android or apple smartphone through Google Calendar. You can also add the timetable to any calendar
+      app that supports the iCalendar format (Almost all of them).
+    </p>
+
+
+    <ol class="steps">
+      <li class="step" id="step1">
+        <h2>Select your timetable</h2>
+
+        <div>
+          <label class="radio">
+            <input name="type" type="radio" value="courses" checked="checked"> Students
+          </label>
+          <label class="radio">
+            <input name="type" type="radio" value="staff"> Staff
+          </label>
+
+          <label class="control-label" for="department">Department</label>
+          <select id="department" class="input-xlarge"></select>
+
+          <label class="control-label" for="items">Timetable</label>
+          <select id="items" class="input-xlarge" name="item"></select>
+        </div>
+      </li>
+
+      <li class="step" id="step2">
+        <h2>Add to Google Calendar</h2>
+
+        <div>
+          <ol>
+            <li>
+          Copy this link: <div class="input-prepend"><label for="calendar-link" class="add-on">iCalendar link: </label><input type="text" class="span5" id="calendar-link"></div>
+            </li>
+            <li>
+              Go to <a href="https://www.google.com/calendar/" target="_blank">Google Calendar</a> and sign in using the account you use on your smartphone if you are not logged in already.
+            </li>
+            <li>
+              <p>Select "Add by URL" and paste the link from above into the dialog:</p>
+              <img alt="google calendar" src="img/google_calendar.png">
+            </li>
+            <li>
+              Click "Add timetable" and the timetable should take a couple of seconds to load, after which it will appear on your calendar.
+            </li>
+          </ol>
+        </div>
+      </li>
+
+      <li class="step" id="step3">
+        <h2>Get it on your device</h2>
+        <div>
+          <h3>iOS (iPhone/iPod)</h3>
+          <ol>
+            <li>
+              Make sure you have a Google account synced to your phone.(Settings → Mail, Contacts, Calendars → Add Account → Gmail)
+            </li>
+            <li>
+              Go to <a href="https://www.google.com/calendar/iphoneselect">https://www.google.com/calendar/iphoneselect</a> and select the calendar you imported. Click "Save"
+            </li>
+            <li>
+              Open the iCal app on in iOS and select "Calendars".
+            </li>
+            <li>
+              Click the reload button in the bottom left of the app and your timetable should appear.
+            </li>
+          </ol>
+          <h3>Android</h3>
+          <p>
+            The calendar should automatically sync with your device (You may need to restart the app to force a refresh on some devices).
+          </p>
+        </div>
+      </li>
+    </ol>
+
+
+  </div>
+
+
+  <footer>
+    Made by <a href="https://twitter.com/danielconnr">Daniel Connor</a>
+  </footer>
+
+
+  <script src="js/depts.js"></script>
+  <script src="js/jquery-1.8.2.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+
+  <script>
+    (function() {
+        var selectedDept,
+          selectedType;
+
+
+      Object.keys = Object.keys || function() {
+        var keys = [];
+        for(var key in this) {
+          if(this.hasOwnProperty(key)) {
+            keys.push(key);
+          }
+        }
+        return keys;
+      };
+
+      function updateItems() {
+        selectedDept = depts[departmentsEl.val()];
+        selectedType = typeEl.filter(":checked").val();
+
+        var typeList = selectedDept[selectedType],
+          // create a document fragment for faster insertion
+          fragment = document.createDocumentFragment();
+
+        for(var i = 0, il = typeList.length; i < il; i++) {
+          var type = typeList[i];
+          $("<option />").val(type.id).text(type.name).appendTo(fragment);
+        }
+
+        itemsEl.html("").append(fragment);
+
+        updateSelectLink();
+      }
+
+      function updateSelectLink() {
+        var url = document.location.href + "timetable.ics?item=" + itemsEl.val() + "&type=" + selectedType;
+        calendarLink.val(url);
+      }
+
+      var departmentsEl = $("#department").on("change", updateItems),
+        typeEl = $("[name=type]").on("change", updateItems),
+        itemsEl = $("#items").on("change", updateSelectLink),
+        urlEl = $("#urls"),
+        calendarLink = $("#calendar-link"),
+        departments = Object.keys(depts).sort(function(a, b) {
+          return depts[a].name.localeCompare(depts[b].name);
+        });
+
+      // populate departments first
+      // they will always be populated so we won't have to change them around again
+      for(var i = 0, il = departments.length; i < il; i++) {
+        var deptID = departments[i],
+          dept = depts[deptID];
+
+        $("<option />").val(deptID).text(dept.name).appendTo(departmentsEl);
+      }
+
+      updateItems();
+
+    $('#tab-headers a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+    })
+
+
+    })();
+  </script>
+
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37731600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+</body>
+</html>
