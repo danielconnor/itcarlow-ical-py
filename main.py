@@ -11,8 +11,6 @@ class DefaultHandler(webapp2.RequestHandler):
                 self.initialize(request, response)
 
         def get(self, format):
-            logging.info(format)
-
             url = self.request.get("url")
 
             if not url and self.request.get("type") and self.request.get("item"):
@@ -26,8 +24,10 @@ class DefaultHandler(webapp2.RequestHandler):
             try:
                 t = timetable.getTimetable(url)
             except:
+                logging.info("error while trying to convert timetable: format: %s, url: %s", format, url)
                 self.response.write("error")
             else:
+                logging.info("successfully converted timetable: format: %s, url: %s", format,  url)
                 self.response.headers["Content-Type"] = "text/plain"
                 self.response.write(t.toICAL().toString())
 

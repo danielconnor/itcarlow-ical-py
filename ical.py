@@ -1,4 +1,3 @@
-import logging
 import datetime
 
 
@@ -66,19 +65,14 @@ class iCal(object):
         body = ""
         attrs = self.attributes
 
-        logging.info(attrs.keys())
-
         for attrName in attrs.keys():
             attr = attrs[attrName]
-            logging.info(attr)
             if type(attr) == str or type(attr) == unicode:
                 body += attrName + ":" + attr + "\n"
             elif type(attr) == datetime.datetime:
                 body += attrName + ":" + toICALDate(attr) + "\n"
             # TODO: Add logic for things like the "ATTENDEE" attribute
             # which contains a list of "sub-attributes".
-
-        logging.info(self.children)
 
         for child in self.children:
             body = body + child.toString()
