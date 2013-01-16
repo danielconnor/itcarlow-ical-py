@@ -6,20 +6,7 @@ from BeautifulSoup import BeautifulSoup
 import xml.dom.minidom as minidom
 import google.appengine.api.urlfetch as urlfetch
 import datetime
-import logging
 import ical
-
-
-def textContent(node):
-    text = ""
-
-    if type(node) == minidom.Element:
-        for child in node.childNodes:
-            text = text + textContent(child)
-    elif type(node) == minidom.Text:
-        text = text + node.nodeValue
-
-    return text
 
 
 def getTimetable(url):
@@ -28,15 +15,20 @@ def getTimetable(url):
     structure from it to allow it to be parsed using the
     DOM javascript API
 
-    @param {String} url The location of the timetable
-    @param {Function} cb A callback function for when the
-     document has been created.
+    @param {str} url The location of the timetable
     """
+
+    # textspreadsheet is easier to parse
     url = url.replace("individual", "textspreadsheet")
     url = url.replace(" ", "%20")
 
     r = urlfetch.fetch(url)
 
+    # We parse the page twice, once using BeautifulSoup, then again
+    # using minidom. We do this because the minidom api better reflects
+    # that of the actual DOM API and it made it easier to convert from the
+    # node.js version.
+    # TODO: Consider revising
     return parseTimetable(minidom.parseString(BeautifulSoup(r.content).prettify()), url)
 
 """
@@ -52,15 +44,6 @@ DAYS = {
     "saturday":  6,
     "sunday":    7
 }
-DAYS_SHORTHAND = [
-    "SU",
-    "MO",
-    "TU",
-    "WE",
-    "TH",
-    "FR",
-    "SA"
-]
 
 
 def parseTime(str):
@@ -153,13 +136,10 @@ class Timetable():
 
                 calendar.add(event)
 
-        logging.info(len(calendar.children))
         return calendar
 
 # A mapping of the content of an element to it's position
-# in the DOM element. Also defines an optional parse function
-# if the content can be better represented in a format other
-# than a string.
+# in the DOM element.
 LAYOUT = {
     "activity": {
         "name": "name"
@@ -199,6 +179,11 @@ LAYOUT = {
 
 
 def getText(node):
+    """
+    Get the text content of the node and all subnodes.
+
+    Similar to Element.textContent of DOM API.
+    """
     rc = []
 
     for n in node.childNodes:
@@ -246,13 +231,11 @@ def parseTimetable(document, url):
                 layoutObj = layout[l]
                 col = columns[l]
 
-                # parse the contents of the element if there's a parse
-                # function available. Otherwise just assume it's text.
+                # We only need to parse list or time strings
+                # otherwise just store the text.
                 if "type" in layoutObj:
-                    if layoutObj["type"] == "list":
+                    if layoutObj["type"] == "list" or layoutObj["type"] == "time":
                         period[layoutObj["name"]] = parseList(getText(col).strip())
-                    if layoutObj["type"] == "time":
-                        period[layoutObj["name"]] = parseTime(getText(col).strip())
                 else:
                     period[layoutObj["name"]] = getText(col).strip()
 

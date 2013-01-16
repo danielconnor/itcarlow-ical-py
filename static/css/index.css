@@ -2,11 +2,6 @@
 .content {
   margin: 10px;
 }
-.large {
-  text-align: center;
-  font-size: 2em;
-  margin: 1em 0;
-}
 
 .steps {
   counter-reset: listNumbering;
