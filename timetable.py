@@ -115,6 +115,7 @@ class Timetable():
             dayVal = DAYS[day.name.lower()]
             dDate = now.replace(day=now.day + (dayVal - today))
 
+
             # set the date of the timetable day to be relative to the
             # current day so the dates are for this week
             for period in periods:
@@ -229,15 +230,17 @@ def parseTimetable(document, url):
 
             for l in range(0, len(layout)):
                 layoutObj = layout[l]
-                col = columns[l]
+                text = getText(columns[l]).strip()
 
                 # We only need to parse list or time strings
                 # otherwise just store the text.
                 if "type" in layoutObj:
-                    if layoutObj["type"] == "list" or layoutObj["type"] == "time":
-                        period[layoutObj["name"]] = parseList(getText(col).strip())
+                    if layoutObj["type"] == "list":
+                        period[layoutObj["name"]] = parseList(text)
+                    if layoutObj["type"] == "time":
+                        period[layoutObj["name"]] = parseTime(text)
                 else:
-                    period[layoutObj["name"]] = getText(col).strip()
+                    period[layoutObj["name"]] = text
 
             day.addPeriod(period)
 
