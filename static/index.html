@@ -105,10 +105,10 @@
           selectedType;
 
 
-      Object.keys = Object.keys || function() {
+      Object.keys = Object.keys || function(obj) {
         var keys = [];
-        for(var key in this) {
-          if(this.hasOwnProperty(key)) {
+        for(var key in obj) {
+          if(obj.hasOwnProperty(key)) {
             keys.push(key);
           }
         }
