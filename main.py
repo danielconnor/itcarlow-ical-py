@@ -27,7 +27,6 @@ class DefaultHandler(webapp2.RequestHandler):
                     "item": urllib.quote(self.request.get("item"))
                     }
 
-            logging.info(url)
             try:
                 t = timetable.getTimetable(url)
             except Exception, e:
