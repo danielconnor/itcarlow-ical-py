@@ -7,6 +7,7 @@ import xml.dom.minidom as minidom
 import google.appengine.api.urlfetch as urlfetch
 import datetime
 import ical
+import logging
 
 
 def getTimetable(url):
@@ -20,7 +21,6 @@ def getTimetable(url):
 
     # textspreadsheet is easier to parse
     url = url.replace("individual", "textspreadsheet")
-    url = url.replace(" ", "%20")
 
     r = urlfetch.fetch(url)
 
@@ -115,7 +115,6 @@ class Timetable():
             dayVal = DAYS[day.name.lower()]
             dDate = now.replace(day=now.day + (dayVal - today))
 
-
             # set the date of the timetable day to be relative to the
             # current day so the dates are for this week
             for period in periods:
@@ -209,22 +208,41 @@ def parseTimetable(document, url):
     dayElements = document.getElementsByTagName("p")
     timetable = Timetable(url)
 
-    if dayElements.length < 5:
+    if not dayElements.length:
+        logging.info(document.toprettyxml())
+        logging.info("not enough days")
         return timetable
 
     # the layout will sometimes differ from staff to student
     # so the order of the columns must be generated on the fly.
     layout = []
-    columns = dayElements[0].nextSibling.nextSibling.getElementsByTagName("tr")[0].getElementsByTagName("td")
+
+    table = dayElements[0]
+
+    while table and table.nodeName != "table":
+        table = table.nextSibling
+
+    if not table or table.nodeName != "table":
+        logging.info("not a table")
+        return timetable
+
+    rows = table.getElementsByTagName("tr")
+
+    if not rows or not rows.length:
+        logging.info("no rows")
+        return timetable
+
+    columns = rows[0].getElementsByTagName("td")
 
     for column in columns:
         layout.append(LAYOUT[column.firstChild.data.strip().lower()])
 
     for dayElement in dayElements:
         day = Day(dayElement.getElementsByTagName("span")[0].firstChild.data.strip())
+
         rows = dayElement.nextSibling.nextSibling.getElementsByTagName("tr")
 
-        for i in range(1, len(rows)):
+        for i in range(1, rows.length):
             columns = rows[i].getElementsByTagName("td")
             period = {}
 
