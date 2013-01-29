@@ -113,7 +113,7 @@ class Timetable():
         for day in days:
             periods = day.periods
             dayVal = DAYS[day.name.lower()]
-            dDate = now.replace(day=now.day + (dayVal - today))
+            dDate = now + ((dayVal - today) * datetime.timedelta(days=1))
 
             # set the date of the timetable day to be relative to the
             # current day so the dates are for this week
