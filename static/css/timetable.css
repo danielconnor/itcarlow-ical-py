@@ -2,80 +2,78 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#timetable {
-
+.checkboxes {
+  float: left;
+  margin: 100px 0 0 20px;
 }
 
 .times,
 .periods {
   height: 600px;
 }
-
-.times {
-  position: relative;
-  float: left;
-  width: 50px;
-  margin: 74px 0 0 0;
-  padding: 0;
-}
-
-.time {
-  position: absolute;
-  display: block;
-  width: 50px;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid #aaa;
-  list-style: none;
-
-  font-size: 10px;
-  text-align: right;
-}
-
-.day {
-  float: left;
-}
-.day h3 {
-  text-align: center;
-  margin: 25px 0;
-  height: 24px;
-}
-.day.highlight {
-  background-color: #eee;
-}
-
-.periods {
-  position: relative;
-  width: 120px;
-  margin: 0;
-  padding: 0;
-}
+.time,
 .period {
   position: absolute;
   display: block;
-  list-style-type: none;
-  width: 100%;
+  list-style: none;
   margin: 0;
-  border-top: 1px solid #aaa;
-
-  background-color: #AAA;
+  width: 100%;
+  padding: 0;
 }
 
-.period h4 {
-  margin: 3px;
-  font-size: 12px;
+.timetable {
+  position: relative;
+  padding-left: 50px;
+  float: left;
+  margin: 0 auto;
 }
+  section {
+    overflow: hidden;
+    margin: 0 auto;
+  }
+    .times {
+      left: 0;
+      top: 60px;
+      position: absolute;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+      .time {
+        border-top: 1px solid #aaa;
+        font-size: 10px;
+      }
+        .time time {
+          display: block;
+          text-align: right;
+          width: 50px;
+        }
 
-.highlight.day .period.selected,
-.period.selected {
-  background-color: black;
-  color: white;
-}
+    .day {
+      float: left;
+    }
+      .day h3 {
+        font-size: 20px;
+        text-align: center;
+      }
 
-.fade .period {
-  background-color: #ddd;
-}
-.highlight.day .period {
-  background-color: #aaa;
-}
+      .periods {
+        position: relative;
+        width: 120px;
+        margin: 0;
+        padding: 0;
+      }
+        .period {
+          position: absolute;
+          background-color: #AAA;
+        }
+        .period.selected {
+          background-color: black;
+          color: white;
+        }
+          .period h4 {
+            margin: 3px;
+            font-size: 12px;
+          }
+
 
