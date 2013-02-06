@@ -77,32 +77,66 @@ class Day():
         self.periods.append(period)
 
 
-class Timetable():
-    """
-    Create a timetable data structure
-    that manages multiple days. It can
-    also be converted to an iCal Calendar
+class Module():
 
-    @param {String} url The url that the timetable was fetched from
-    """
+    def __init__(self, period):
+        self.name = ""
+        self.rooms = []
+        self.times = []
+        self.lecturers = []
+        self.update(period)
+
+    def update(self, period):
+        if "lecturers" in period:
+            for lecturer in period["lecturers"]:
+                if not lecturer in self.lecturers:
+                    self.lecturers.append(lecturer)
+
+        if "room" in period:
+            if not period["room"] in self.rooms:
+                self.rooms.append(period["room"])
+
+        self.name = period["module"]
+
+
+class Timetable():
+
     def __init__(self, url=""):
+        """
+        Create a timetable data structure
+        that manages multiple days. It can
+        also be converted to an iCal Calendar
+
+        @param {String} url The url that the timetable was fetched from
+        """
         self.url = url
         self.days = []
+        self.modules = {}
 
-    """
-    Push a Day object to the internal days array
-
-    @param {ical.Day} day The day to add to the timetable
-    """
     def addDay(self, day):
+        """
+        Push a Day object to the internal days array
+
+        @param {ical.Day} day The day to add to the timetable
+        """
         self.days.append(day)
 
-    """
-    Creates an iCal Calendar data structure from itself.
+    def updateModule(self, period):
+        """
+        Update the information we have about each module based on
+        each period that we encounter.
+        """
+        if not period["module"] in self.modules:
+            self.modules[period["module"]] = Module(period)
+        else:
+            self.modules[period["module"]].update(period)
 
-    @returns {ical.Canendar}
-    """
-    def toICAL(self):
+    def toICAL(self, modules=[]):
+        """
+        Creates an iCal Calendar data structure from itself.
+
+        @returns {ical.Canendar}
+        """
         days = self.days
         now = datetime.datetime.today()
         today = now.isoweekday()
@@ -118,23 +152,24 @@ class Timetable():
             # set the date of the timetable day to be relative to the
             # current day so the dates are for this week
             for period in periods:
-                event = ical.Event()
+                if len(modules) == 0 or period["module"] in modules:
+                    event = ical.Event()
 
-                event.setAttribute("DTSTART;TZID=Europe/Dublin", dDate.replace(
-                    hour=period["start"]["hours"],
-                    minute=period["start"]["mins"],
-                    second=0))
-                event.setAttribute("DTEND;TZID=Europe/Dublin", dDate.replace(
-                    hour=period["end"]["hours"],
-                    minute=period["end"]["mins"],
-                    second=0))
-                event.setAttribute("SUMMARY", period["name"])
-                event.setAttribute("DESCRIPTION", ";".join(period["lecturers"]))
-                event.setAttribute("LOCATION", period["room"])
-                event.setAttribute("RRULE", "FREQ=WEEKLY")
-                event.setAttribute("SEQUENCE", "1")
+                    event.setAttribute("DTSTART;TZID=Europe/Dublin", dDate.replace(
+                        hour=period["start"]["hours"],
+                        minute=period["start"]["mins"],
+                        second=0))
+                    event.setAttribute("DTEND;TZID=Europe/Dublin", dDate.replace(
+                        hour=period["end"]["hours"],
+                        minute=period["end"]["mins"],
+                        second=0))
+                    event.setAttribute("SUMMARY", period["name"])
+                    event.setAttribute("DESCRIPTION", ";".join(period["lecturers"]))
+                    event.setAttribute("LOCATION", period["room"])
+                    event.setAttribute("RRULE", "FREQ=WEEKLY")
+                    event.setAttribute("SEQUENCE", "1")
 
-                calendar.add(event)
+                    calendar.add(event)
 
         return calendar
 
@@ -159,7 +194,8 @@ LAYOUT = {
         "type": "time"
     },
     "duration": {
-        "name": "duration"
+        "name": "duration",
+        "type": "time"
     },
     "weeks": {
         "name": "weeks"
@@ -259,6 +295,9 @@ def parseTimetable(document, url):
                         period[layoutObj["name"]] = parseTime(text)
                 else:
                     period[layoutObj["name"]] = text
+
+            logging.info(period)
+            timetable.updateModule(period)
 
             day.addPeriod(period)
 
