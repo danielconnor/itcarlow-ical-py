@@ -54,7 +54,34 @@
           days = $(".day"),
           times = $(".times"),
           modules = $(".module input"),
+          form = $("form"),
           doc = $(document);
+
+
+        function getUrl(form) {
+          var params = "";
+
+          function addParam(input) {
+            params += (params ? "&" : "?") + input.attr("name") + "=" + input.val();
+          }
+
+          form.find("input, select").each(function() {
+            var input = $(this);
+
+            switch(input.attr("type")) {
+              case "checkbox":
+                if(input.is(":checked")) addParam(input);
+                break;
+              default:
+                addParam(input);
+                break;
+            }
+          });
+
+          return form.attr("action") + params;
+        }
+
+        window.getUrl = getUrl;
 
         function unHighlight() {
           timetable.removeClass("fade");
