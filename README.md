@@ -60,10 +60,20 @@ A json with all the information that we can collect about the timetable.
 ```
 
 #### ics
-An iCalendar representation of the timetable.
+An iCalendar representation of the timetable. All dates represent days from the current week. Each period is set to repeat at the same time each week forever.
+If the calendar is imported into Google Calendar, at the moment it will be updated at least once a day so when a new week starts, the calendar will start from
+the current week and will not show for any previous weeks.
 
 ```
-
+BEGIN:VEVENT
+DESCRIPTION: %Lecturers%
+SEQUENCE:1
+SUMMARY: %Period name%
+DTSTART;TZID=Europe/Dublin:%Start timestamp with date/day normalised to current week%
+RRULE:FREQ=WEEKLY
+DTEND;TZID=Europe/Dublin:%End timestamp with date/day normalised to current week%
+LOCATION: %Room%
+END:VEVENT
 ```
 
 ## Parameters

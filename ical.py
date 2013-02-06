@@ -83,7 +83,6 @@ class iCal(object):
 class Calendar(iCal):
     def __init__(self):
         super(Calendar, self).__init__("VCALENDAR", {
-            "PRODID": "-//Google Inc//Google Calendar 70.9054//EN",
             "VERSION": "2.0",
             "CALSCALE": "GREGORIAN"
         })
