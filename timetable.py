@@ -245,7 +245,7 @@ def parseTimetable(document, url):
     timetable = Timetable(url)
 
     if not dayElements.length:
-        logging.info(document.toprettyxml())
+        # logging.info(document.toprettyxml())
         logging.info("not enough days")
         return timetable
 
@@ -296,7 +296,6 @@ def parseTimetable(document, url):
                 else:
                     period[layoutObj["name"]] = text
 
-            logging.info(period)
             timetable.updateModule(period)
 
             day.addPeriod(period)

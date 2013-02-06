@@ -6,6 +6,7 @@ import timetable
 import urllib
 import jinja2
 import os
+import re
 
 j_env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -34,6 +35,12 @@ class DefaultHandler(webapp2.RequestHandler):
                     "type": type,
                     "item": urllib.quote(item)
                     }
+            elif url:
+                match = re.search("(textspreadsheet|individual);(.+?);id;(.+?)\?", urllib.unquote(url))
+
+                if match:
+                    type = match.group(2)
+                    item = match.group(3)
 
             try:
                 t = timetable.getTimetable(url)
@@ -43,7 +50,6 @@ class DefaultHandler(webapp2.RequestHandler):
                 self.response.write("error")
             else:
                 logging.info("successfully converted timetable: format: %s, url: %s", format,  url)
-                logging.info(t.days)
 
                 if format == "html":
                     self.response.write(j_env.get_template("templates/timetable.html").render({
