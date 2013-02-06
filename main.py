@@ -21,7 +21,7 @@ class DefaultHandler(webapp2.RequestHandler):
 
         def get(self, format):
             url = self.request.get("url")
-            modules = self.request.get_all("module")
+            modules = self.request.get_all("modules")
 
             if not url and self.request.get("type") and self.request.get("item"):
                 type = self.request.get("type")
@@ -50,7 +50,8 @@ class DefaultHandler(webapp2.RequestHandler):
                         "days": t.days,
                         "modules": t.modules,
                         "type": type,
-                        "item": item
+                        "item": item,
+                        "selectedModules": modules
                     }))
                 elif format == "ics":
                     self.response.headers["Content-Type"] = "text/plain"
