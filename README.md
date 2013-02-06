@@ -9,6 +9,7 @@ them in the [issues section](https://github.com/danielconnor/itcarlow-ical-py/is
 # API
 The service exposes one endpoint: `http://itctimetable.appspot.com/timetable:format`
 
+## Formats
 Where format is the format that you want the reponse in. There are currently three formats available:
 
 #### html
@@ -65,7 +66,7 @@ An iCalendar representation of the timetable.
 
 ```
 
-
+## Parameters
 There are three parameters that the endpoint accepts:
 
 #### item
