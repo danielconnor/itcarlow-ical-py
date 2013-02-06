@@ -1,0 +1,105 @@
+{% set hour_height = 10 -%}
+{% set start_time = 9 -%}
+
+
+<!doctype html>
+<html>
+  <head>
+    <title>Timetable</title>
+    <meta charset="utf-8">
+    <link href="css/timetable.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <form action="/timetable.ics" method="GET">
+      <input type="hidden" name="item" value="{{ item }}">
+      <input type="hidden" name="type" value="{{ type }}">
+      <ul>
+      {% for moduleName in modules %}
+        <li class="module">
+          <label><input type="checkbox" name="modules" value="{{ moduleName }}"{% if moduleName in selectedModules %} checked=checked{% endif %}> {{ moduleName }}</label>
+        </li>
+      {% endfor %}
+      </ul>
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="timetable">
+        <ul class="times">
+          {% for time in range(start_time, start_time + 10) %}
+            <li class="time" style="height:{{ hour_height }}%; top:{{ (time - start_time) * hour_height }}%;">
+              <time>{{ time }}:00</time>
+            </li>
+          {% endfor %}
+        </ul>
+        {% for day in days %}
+          <div class="day">
+            <h3>{{ day.name }}</h3>
+            <ul class="periods">
+              {% for period in day.periods %}
+                <li class="period" style="height:{{ period["duration"]["hours"] * hour_height + period["duration"]["mins"] / 60 * hour_height }}%; top: {{ (period["start"]["hours"] - start_time) * hour_height + period["start"]["mins"] / 60 * hour_height }}%;" data-module="{{ period["module"] }}">
+                  <h4>{{ period["module"] }}<h4>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+
+    </div>
+    <script src="js/jquery-1.8.2.min.js"></script>
+    <script>
+
+      (function() {
+        var timetable = $("#timetable"),
+          days = $(".day"),
+          times = $(".times"),
+          modules = $(".module input"),
+          doc = $(document);
+
+        function unHighlight() {
+          timetable.removeClass("fade");
+          times.insertBefore(days.eq(0));
+          days.removeClass("highlight");
+        }
+
+        doc.on("click", function() {
+          unHighlight();
+        });
+
+        modules.each(function() {
+          function update(e) {
+            checkbox.is(":checked") ?
+              moduleClasses.addClass("selected"):
+              moduleClasses.removeClass("selected");
+          };
+
+          var checkbox = $(this).on("change", update),
+            moduleClasses = $("[data-module=\"" + checkbox.val() + "\"]");
+
+          update();
+        });
+
+        days.on("click", function(e) {
+          e.stopPropagation();
+
+          var day = $(this);
+
+          if(!day.hasClass("highlight")) {
+            times.insertBefore(day);
+            days.removeClass("highlight");
+            day.addClass("highlight");
+            timetable.addClass("fade");
+          }
+          else {
+            unHighlight();
+          }
+
+        });
+
+      })();
+
+
+    </script>
+
+  </body>
+</html>

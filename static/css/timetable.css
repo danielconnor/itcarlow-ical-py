@@ -1,0 +1,81 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#timetable {
+
+}
+
+.times,
+.periods {
+  height: 600px;
+}
+
+.times {
+  position: relative;
+  float: left;
+  width: 50px;
+  margin: 74px 0 0 0;
+  padding: 0;
+}
+
+.time {
+  position: absolute;
+  display: block;
+  width: 50px;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #aaa;
+  list-style: none;
+
+  font-size: 10px;
+  text-align: right;
+}
+
+.day {
+  float: left;
+}
+.day h3 {
+  text-align: center;
+  margin: 25px 0;
+  height: 24px;
+}
+.day.highlight {
+  background-color: #eee;
+}
+
+.periods {
+  position: relative;
+  width: 120px;
+  margin: 0;
+  padding: 0;
+}
+.period {
+  position: absolute;
+  display: block;
+  list-style-type: none;
+  width: 100%;
+  margin: 0;
+  border-top: 1px solid #aaa;
+
+  background-color: #AAA;
+}
+
+.period h4 {
+  margin: 3px;
+  font-size: 12px;
+}
+
+.highlight.day .period.selected,
+.period.selected {
+  background-color: black;
+  color: white;
+}
+
+.fade .period {
+  background-color: #ddd;
+}
+.highlight.day .period {
+  background-color: #aaa;
+}
+
