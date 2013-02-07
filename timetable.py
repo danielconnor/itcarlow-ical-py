@@ -8,6 +8,7 @@ import google.appengine.api.urlfetch as urlfetch
 import datetime
 import ical
 import logging
+import re
 
 
 def getTimetable(url):
@@ -96,7 +97,7 @@ class Module():
             if not period["room"] in self.rooms:
                 self.rooms.append(period["room"])
 
-        self.name = period["module"]
+        self.name = period["name"]
 
 
 class Timetable():
@@ -126,10 +127,12 @@ class Timetable():
         Update the information we have about each module based on
         each period that we encounter.
         """
-        if not period["module"] in self.modules:
-            self.modules[period["module"]] = Module(period)
+        name = period["name"]
+
+        if not name in self.modules:
+            self.modules[name] = Module(period)
         else:
-            self.modules[period["module"]].update(period)
+            self.modules[name].update(period)
 
     def toICAL(self, modules=[]):
         """
@@ -152,7 +155,7 @@ class Timetable():
             # set the date of the timetable day to be relative to the
             # current day so the dates are for this week
             for period in periods:
-                if len(modules) == 0 or period["module"] in modules:
+                if len(modules) == 0 or period["name"] in modules:
                     event = ical.Event()
 
                     event.setAttribute("DTSTART;TZID=Europe/Dublin", dDate.replace(
@@ -177,7 +180,8 @@ class Timetable():
 # in the DOM element.
 LAYOUT = {
     "activity": {
-        "name": "name"
+        "name": "name",
+        "regex": "(.+)\s*\/.*"
     },
     "module": {
         "name": "module"
@@ -285,6 +289,11 @@ def parseTimetable(document, url):
             for l in range(0, len(layout)):
                 layoutObj = layout[l]
                 text = getText(columns[l]).strip()
+
+                if "regex" in layoutObj:
+                    match = re.search(layoutObj["regex"], text)
+                    if match:
+                        text = match.group(1)
 
                 # We only need to parse list or time strings
                 # otherwise just store the text.

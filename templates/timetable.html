@@ -21,39 +21,39 @@
         <input type="hidden" name="item" value="{{ item }}">
         <input type="hidden" name="type" value="{{ type }}">
 
-        <section>
+        <div class="section">
           <div class="timetable">
             <ul class="times">
               {% for time in range(start_time, start_time + 10) %}
                 <li class="time" style="height:{{ hour_height }}%; top:{{ (time - start_time) * hour_height }}%;">
-                  <time>{{ time }}:00</time>
+                  <span>{{ time }}:00</span>
                 </li>
               {% endfor %}
             </ul>
             {% for day in days %}
-              <div class="day">
-                <h3>{{ day.name }}</h3>
-                <ul class="periods">
-                  {% for period in day.periods %}
-                    <li class="period" style="height:{{ period["duration"]["hours"] * hour_height + period["duration"]["mins"] / 60 * hour_height }}%; top: {{ (period["start"]["hours"] - start_time) * hour_height + period["start"]["mins"] / 60 * hour_height }}%;" data-module="{{ period["module"] }}">
-                      <h4>{{ period["module"] }}<h4>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
+            <div class="day">
+              <h3>{{ day.name }}</h3>
+              <ul class="periods">
+                {% for period in day.periods %}
+                  <li class="period" style="height:{{ period["duration"]["hours"] * hour_height + period["duration"]["mins"] / 60 * hour_height }}%; top: {{ (period["start"]["hours"] - start_time) * hour_height + period["start"]["mins"] / 60 * hour_height }}%;" data-module="{{ period["name"] }}">
+                    <h4>{{ period["name"] }}</h4>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
             {% endfor %}
           </div>
 
           <div class="checkboxes hidden-phone">
             <ul>
-            {% for moduleName in modules %}
+            {% for moduleName in modules.keys() %}
               <li class="module">
                 <label><input type="checkbox" name="modules" value="{{ moduleName }}"{% if moduleName in selectedModules %} checked=checked{% endif %}> {{ moduleName }}</label>
               </li>
             {% endfor %}
             </ul>
           </div>
-        </section>
+        </div>
 
         <button class="btn btn-primary" type="submit">Submit</button>
 

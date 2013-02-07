@@ -27,11 +27,12 @@ body {
   float: left;
   margin: 0 auto;
 }
-  section {
+  .section {
     overflow: hidden;
     margin: 0 auto;
   }
     .times {
+      float: left;
       left: 0;
       top: 60px;
       position: absolute;
@@ -40,10 +41,10 @@ body {
       padding: 0;
     }
       .time {
-        border-top: 1px solid #aaa;
+        border-top: 1px solid #ccc;
         font-size: 10px;
       }
-        .time time {
+        .time span {
           display: block;
           text-align: right;
           width: 50px;
@@ -51,6 +52,7 @@ body {
 
     .day {
       float: left;
+      border-left: 1px solid #ccc;
     }
       .day h3 {
         font-size: 20px;
@@ -64,8 +66,8 @@ body {
         padding: 0;
       }
         .period {
-          position: absolute;
           background-color: #AAA;
+          cursor: pointer;
         }
         .period.selected {
           background-color: black;
