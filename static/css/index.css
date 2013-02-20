@@ -5,11 +5,13 @@
 }
 
 .steps .step {
+  position: relative;
   font-size: 1em;
   counter-increment: listNumbering;
 }
 .steps h2 {
   display: inline-block;
+  margin-left: 30px;
 }
 .steps div {
   margin: 1em 0 1em 3em;
@@ -20,7 +22,12 @@
 }
 
 .steps .step:before {
-  content: counter(listNumbering) ' - ';
+  content: counter(listNumbering) '-';
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  margin: 10px 0;
+  line-height: 40px;
   font-size: 30px;
   font-weight: bold;
 }

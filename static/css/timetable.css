@@ -26,6 +26,7 @@ body {
   padding-left: 50px;
   float: left;
   margin: 0 auto;
+  width: 605px
 }
   .section {
     overflow: hidden;

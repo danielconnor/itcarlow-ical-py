@@ -9,7 +9,7 @@
   <link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-  <a href="https://github.com/danielconnor/itcarlow-ical-py">
+  <a class="hidden-phone" href="https://github.com/danielconnor/itcarlow-ical-py">
     <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
   </a>
 
@@ -101,6 +101,7 @@
   <script src="js/depts.js"></script>
   <script src="js/jquery-1.8.2.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/ZeroClipboard.js"></script>
 
   <script>
     (function() {
@@ -144,7 +145,7 @@
         typeEl = $("[name=type]").on("change", updateItems),
         itemsEl = $("#items").on("change", updateSelectLink),
         urlEl = $("#urls"),
-        calendarLink = $("#calendar-link"),
+        calendarLink = $("#calendar-link").on("click", function() { if(this.select) this.select(); }),
         departments = Object.keys(depts).sort(function(a, b) {
           return depts[a].name.localeCompare(depts[b].name);
         });
@@ -159,12 +160,6 @@
       }
 
       updateItems();
-
-    $('#tab-headers a').click(function (e) {
-      e.preventDefault();
-      $(this).tab('show');
-    })
-
 
     })();
   </script>
