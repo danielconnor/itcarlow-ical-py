@@ -7,16 +7,15 @@ This is currently a work in progress as it's a port from the node.js version. It
 them in the [issues section](https://github.com/danielconnor/itcarlow-ical-py/issues)
 
 # API
-The service exposes one endpoint: `http://itctimetable.appspot.com/timetable:format`
+The service exposes one endpoint: `http://itctimetable.appspot.com/timetable:format` where format is the format that you want the reponse in. There are currently three formats available:
 
 ## Formats
-Where format is the format that you want the reponse in. There are currently three formats available:
 
 #### html
 The html version provides a form that allows the user to select the modules that they want to appear in the reponse of the two other formats.
 
 #### json
-A json with all the information that we can collect about the timetable.
+A json response with all the information that we can collect about the timetable.
 
 ```
 {
