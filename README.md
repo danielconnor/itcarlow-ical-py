@@ -7,9 +7,10 @@ This is currently a work in progress as it's a port from the node.js version. It
 them in the [issues section](https://github.com/danielconnor/itcarlow-ical-py/issues)
 
 # API
-The service exposes one endpoint: `http://itctimetable.appspot.com/timetable:format` where format is the format that you want the reponse in. There are currently three formats available:
+The service exposes one endpoint: `http://itctimetable.appspot.com/timetable:format` where format is the format that you want the reponse in.
 
 ## Formats
+There are currently three response formats available:
 
 #### html
 The html version provides a form that allows the user to select the modules that they want to appear in the reponse of the two other formats.
@@ -59,7 +60,7 @@ A json response with all the information that we can collect about the timetable
 ```
 
 #### ics
-An iCalendar representation of the timetable. All dates represent days from the current week. Each period is set to repeat at the same time each week forever.
+An [http://tools.ietf.org/html/rfc5545](iCalendar) representation of the timetable. All dates represent days from the current week. Each period is set to repeat at the same time each week forever.
 If the calendar is imported into Google Calendar, at the moment it will be updated at least once a day so when a new week starts, the calendar will start from
 the current week and will not show for any previous weeks.
 
